@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaOS - Pharmaceutical ERP Solution</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0A0E1A;
+    --bg-card: #111827;
+    --bg-card-hover: #1F2937;
+    --accent-cyan: #00FFD1;
+    --accent-blue: #00AAFF;
+    --accent-purple: #7B2FBE;
+    --gradient-main: linear-gradient(135deg, #00AAFF, #7B2FBE);
+    --text-primary: #FFFFFF;
+    --text-secondary: #94A3B8;
+    --border-subtle: rgba(0, 255, 209, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* ── SLIDE SYSTEM ── */
+  .slides-wrapper {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-primary);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    transform: translateY(30px);
+    overflow: hidden;
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
+
+  .slide.exit-up {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  .slide-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 80px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .eyebrow {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-cyan);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  h1.slide-title {
+    font-size: 52px;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #00FFD1, #00AAFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .slide-subtitle {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 28px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(0, 255, 209, 0.15);
+    border-color: rgba(0, 255, 209, 0.4);
+  }
+
+  .card-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  /* ── STAT NUMBERS ── */
+  .stat-number {
+    font-size: 64px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #00FFD1, #00AAFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-gradient {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 36px;
+    background: linear-gradient(135deg, #00AAFF, #7B2FBE);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 20px rgba(0, 170, 255, 0.3);
+  }
+
+  .btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 170, 255, 0.5);
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 36px;
+    background: transparent;
+    border: 2px solid var(--accent-cyan);
+    border-radius: 50px;
+    color: var(--accent-cyan);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 20px rgba(0, 255, 209, 0.1);
+  }
+
+  .btn-outline:hover {
+    background: rgba(0, 255, 209, 0.1);
+    box-shadow: 0 0 30px rgba(0, 255, 209, 0.3);
+    transform: translateY(-2px);
+  }
+
+  /* ── NAVIGATION DOTS ── */
+  #nav-dots {
+    position: fixed;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1000;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-cyan);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .dot.active {
+    background: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 209, 0.6);
+    transform: scale(1.3);
+  }
+
+  /* ── GRID BACKGROUND ── */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,209,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,209,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  /* ── STAGGER ANIMATION ── */
+  .slide.active .anim {
+    animation: fadeUp 0.6s ease forwards;
+    opacity: 0;
+  }
+
+  .slide.active .anim:nth-child(1) { animation-delay: 0.05s; }
+  .slide.active .anim:nth-child(2) { animation-delay: 0.15s; }
+  .slide.active .anim:nth-child(3) { animation-delay: 0.25s; }
+  .slide.active .anim:nth-child(4) { animation-delay: 0.35s; }
+  .slide.active .anim:nth-child(5) { animation-delay: 0.45s; }
+  .slide.active .anim:nth-child(6) { animation-delay: 0.55s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── NEON GLOW ── */
+  .neon-glow {
+    box-shadow: 0 0 20px rgba(0, 255, 209, 0.3);
+  }
+
+  /* ════════════════════════════════════
+     SLIDE 1 – COVER
+  ════════════════════════════════════ */
+  #slide-1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #slide-1 .slide-content {
+    align-items: center;
+    text-align: center;
+    gap: 0;
+  }
+
+  .brand-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #00AAFF, #7B2FBE);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 800;
+    color: white;
+    box-shadow: 0 0 30px rgba(0, 170, 255, 0.4);
+    margin-bottom: 12px;
+  }
+
+  .brand-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+    letter-spacing: 2px;
+  }
+
+  #slide-1 h1 {
+    font-size: 68px;
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+
+  #slide-1 .sub-en {
+    font-size: 22px;
+    color: var(--text-secondary);
+    margin-bottom: 48px;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .radial-glow-center {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0,170,255,0.12) 0%, rgba(123,47,190,0.08) 40%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ════════════════════════════════════
+     SLIDE 2 – PROBLEM
+  ════════════════════════════════════ */
+  #slide-2 .slide-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .slide-left { flex: 0 0 38%; }
+  .slide-right { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+
+  .problem-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-left: 3px solid var(--accent-cyan);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .problem-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(0,255,209,0.15);
+  }
+
+  .problem-icon {
+    font-size: 36px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .problem-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .problem-card-en {
+    font-size: 13px;
+    color: var(--accent-cyan);
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .problem-card-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  /* ════════════════════════════════════
+     SLIDE 3 – MARKET
+  ════════════════════════════════════ */
+  #slide-3 .slide-content {
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  .slide-header { flex-shrink: 0; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    flex: 1;
+    align-content: center;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 40px 28px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .stat-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(0, 255, 209, 0.2);
+    border-color: rgba(0, 255, 209, 0.4);
+  }
+
+  .stat-label-vn {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .stat-label-en {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* ════════════════════════════════════
+     SLIDE 4 – SOLUTION
+  ════════════════════════════════════ */
+  #slide-4 .slide-content {
+    gap: 24px;
+    justify-content: center;
+  }
+
+  .flow-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 8px 0;
+  }
+
+  .flow-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .flow-icon-wrap {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 2px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    transition: all 0.3s;
+    box-shadow: 0 0 20px rgba(0,255,209,0.1);
+  }
+
+  .flow-node:hover .flow-icon-wrap {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 30px rgba(0,255,209,0.3);
+    transform: scale(1.05);
+  }
+
+  .flow-label-vn {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+  }
+
+  .flow-label-en {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  .flow-arrow {
+    width: 60px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  .flow-arrow svg {
+    width: 50px;
+    height: 20px;
+  }
+
+  @keyframes pulse-arrow {
+    0%, 100% { opacity: 0.4; transform: scaleX(0.9); }
+    50% { opacity: 1; transform: scaleX(1.05); }
+  }
+
+  .flow-arrow svg { animation: pulse-arrow 1.8s ease-in-out infinite; }
+
+  .pills-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    padding: 10px 24px;
+    border: 1px solid var(--accent-cyan);
+    border-radius: 50px;
+    color: var(--accent-cyan);
+    font-size: 14px;
+    font-weight: 600;
+    background: rgba(0,255,209,0.06);
+    box-shadow: 0 0 12px rgba(0,255,209,0.15);
+  }
+
+  /* ════════════════════════════════════
+     SLIDES 5, 6, 7 – FEATURES
+  ════════════════════════════════════ */
+  .feature-slide .slide-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 60px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+
+  .feature-left { flex: 1; }
+  .feature-right { flex: 1; display: flex; flex-direction: column; gap: 0; }
+
+  .mockup-card {
+    background: #0D1520;
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 0 40px rgba(0,255,209,0.08);
+    min-height: 300px;
+  }
+
+  .mockup-title-bar {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-cyan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  /* mini table */
+  .mini-table { width: 100%; border-collapse: collapse; }
+
+  .mini-table th {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .mini-table td {
+    font-size: 13px;
+    color: var(--text-primary);
+    padding: 10px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .badge-ok { background: rgba(34,197,94,0.2); color: #22C55E; }
+  .badge-soon { background: rgba(251,146,60,0.2); color: #FB923C; }
+  .badge-exp { background: rgba(239,68,68,0.2); color: #EF4444; }
+
+  /* feature bullets */
+  .feature-header-block { margin-bottom: 28px; }
+
+  .feature-bullets { display: flex; flex-direction: column; gap: 20px; }
+
+  .feature-bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .check-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(0,255,209,0.15);
+    border: 1px solid var(--accent-cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--accent-cyan);
+    margin-top: 2px;
+    box-shadow: 0 0 10px rgba(0,255,209,0.2);
+  }
+
+  .bullet-vn {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+
+  .bullet-en {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* temperature gauge mockup */
+  .gauge-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 0;
+  }
+
+  .gauge-circle {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 8px solid transparent;
+    background:
+      linear-gradient(var(--bg-primary), var(--bg-primary)) padding-box,
+      conic-gradient(#22C55E 70%, rgba(255,255,255,0.1) 70%) border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 30px rgba(34,197,94,0.25);
+  }
+
+  .gauge-temp {
+    font-size: 26px;
+    font-weight: 800;
+    color: #22C55E;
+  }
+
+  .gauge-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .location-dots {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .loc-dot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .loc-dot::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 8px var(--accent-cyan);
+    display: inline-block;
+  }
+
+  /* POS mockup */
+  .pos-form { display: flex; flex-direction: column; gap: 10px; }
+
+  .pos-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .pos-field-label {
+    color: var(--text-secondary);
+    font-size: 11px;
+    width: 56px;
+    flex-shrink: 0;
+  }
+
+  .pos-field-value {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .approved-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(34,197,94,0.15);
+    border: 1px solid rgba(34,197,94,0.4);
+    border-radius: 50px;
+    color: #22C55E;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 8px;
+    box-shadow: 0 0 15px rgba(34,197,94,0.2);
+  }
+
+  /* ════════════════════════════════════
+     SLIDE 8 – ROI
+  ════════════════════════════════════ */
+  #slide-8 .slide-content { gap: 20px; justify-content: center; }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    flex: 1;
+    align-content: center;
+  }
+
+  .metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-top: 3px solid var(--accent-cyan);
+    border-radius: 16px;
+    padding: 32px 28px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .metric-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(0,255,209,0.15);
+    border-color: rgba(0,255,209,0.5);
+  }
+
+  .metric-number {
+    font-size: 64px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #00FFD1, #00AAFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+
+  .metric-desc-vn {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .metric-desc-en {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* ════════════════════════════════════
+     SLIDE 9 – WHY US
+  ════════════════════════════════════ */
+  #slide-9 .slide-content { gap: 24px; justify-content: center; }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .why-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .why-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 25px rgba(0,255,209,0.15);
+    border-color: rgba(0,255,209,0.35);
+  }
+
+  .why-icon { font-size: 38px; }
+
+  .why-title-vn {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  .why-title-en {
+    font-size: 13px;
+    color: var(--accent-cyan);
+    font-weight: 600;
+  }
+
+  .trust-line {
+    text-align: center;
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  .logo-placeholder-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .logo-placeholder {
+    width: 100px;
+    height: 44px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+  }
+
+  /* ════════════════════════════════════
+     SLIDE 10 – CTA
+  ════════════════════════════════════ */
+  #slide-10 {
+    background: linear-gradient(135deg, #061028 0%, #10063A 100%);
+  }
+
+  #slide-10 .slide-content {
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  #slide-10 h1 {
+    font-size: 56px;
+    line-height: 1.1;
+  }
+
+  .cta-subtitle {
+    font-size: 20px;
+    color: rgba(255,255,255,0.55);
+    margin-top: -8px;
+  }
+
+  .btn-cta-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 22px 52px;
+    background: white;
+    border: none;
+    border-radius: 50px;
+    color: #0A0E1A;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 40px rgba(255,255,255,0.25);
+    margin-top: 10px;
+  }
+
+  .btn-cta-main:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 10px 50px rgba(255,255,255,0.35);
+  }
+
+  .contact-row {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 500;
+  }
+
+  .orb-1 {
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,170,255,0.18), transparent 70%);
+    top: -100px; left: -150px;
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  .orb-2 {
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(123,47,190,0.18), transparent 70%);
+    bottom: -100px; right: -150px;
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  .orb-3 {
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,255,209,0.1), transparent 70%);
+    top: 40%; left: 50%; transform: translate(-50%,-50%);
+    filter: blur(60px);
+    pointer-events: none;
+  }
+
+  /* ── SLIDE COUNT ── */
+  #slide-counter {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    z-index: 1000;
+    letter-spacing: 1px;
+  }
+
+  /* ── RESPONSIVE SMALL ADJUSTMENTS ── */
+  @media (max-width: 1100px) {
+    .slide-content { padding: 50px 40px; }
+    h1.slide-title { font-size: 40px; }
+    .stat-number, .metric-number { font-size: 48px; }
+    .why-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<div id="nav-dots">
+  <div class="dot active" onclick="goTo(0)"></div>
+  <div class="dot" onclick="goTo(1)"></div>
+  <div class="dot" onclick="goTo(2)"></div>
+  <div class="dot" onclick="goTo(3)"></div>
+  <div class="dot" onclick="goTo(4)"></div>
+  <div class="dot" onclick="goTo(5)"></div>
+  <div class="dot" onclick="goTo(6)"></div>
+  <div class="dot" onclick="goTo(7)"></div>
+  <div class="dot" onclick="goTo(8)"></div>
+  <div class="dot" onclick="goTo(9)"></div>
+</div>
+
+<div id="slide-counter">1 / 10</div>
+
+<div class="slides-wrapper">
+
+  <!-- ══════════════════════════════════
+       SLIDE 1 – COVER
+  ══════════════════════════════════ -->
+  <section class="slide active" id="slide-1">
+    <div class="grid-bg"></div>
+    <div class="radial-glow-center"></div>
+    <div class="slide-content">
+      <div class="anim" style="display:flex;flex-direction:column;align-items:center;">
+        <div class="brand-logo">P</div>
+        <div class="brand-name">PharmaOS</div>
+      </div>
+      <div class="anim eyebrow">Pharmaceutical ERP Solution</div>
+      <h1 class="slide-title anim">
+        <span class="gradient-text">Chuyển đổi số</span><br>
+        toàn diện ngành Dược
+      </h1>
+      <div class="sub-en anim">Complete Digital Transformation for Pharma</div>
+      <div class="btn-row anim">
+        <button class="btn-gradient">▶ Xem Demo</button>
+        <button class="btn-outline">Tìm hiểu thêm</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       SLIDE 2 – THE PROBLEM
+  ══════════════════════════════════ -->
+  <section class="slide" id="slide-2">
+    <div class="grid-bg"></div>
+    <div class="glow-orb" style="width:400px;height:400px;top:-100px;left:-100px;background:radial-gradient(circle,rgba(0,170,255,0.08),transparent 70%);"></div>
+    <div class="slide-content">
+      <div class="slide-left">
+        <div class="eyebrow anim">The Challenge</div>
+        <h1 class="slide-title anim">Ngành Dược đang<br><span class="gradient-text">đối mặt điều gì?</span></h1>
+        <p class="slide-subtitle anim">What Challenges Does Pharma Face?</p>
+        <p class="anim" style="font-size:15px;color:var(--text-secondary);line-height:1.7;">Các doanh nghiệp dược phẩm đang chịu áp lực lớn từ quy định, chi phí vận hành, và sự thiếu minh bạch trong chuỗi cung ứng.</p>
+      </div>
+      <div class="slide-right">
+        <div class="problem-card anim">
+          <div class="problem-icon">🏭</div>
+          <div>
+            <div class="problem-card-title">Quản lý Kho & Hạn Dùng</div>
+            <div class="problem-card-en">Inventory & Expiry Complexity</div>
+            <div class="problem-card-desc">Hàng nghìn SKU, số lô, hạn dùng cần theo dõi thủ công — dễ sai sót, gây lãng phí lớn.</div>
+          </div>
+        </div>
+        <div class="problem-card anim">
+          <div class="problem-icon">🚛</div>
+          <div>
+            <div class="problem-card-title">Chuỗi Cung Ứng Mờ Đục</div>
+            <div class="problem-card-en">Opaque Supply Chain</div>
+            <div class="problem-card-desc">Thiếu khả năng truy xuất nguồn gốc và theo dõi nhiệt độ trong vận chuyển lạnh.</div>
+          </div>
+        </div>
+        <div class="problem-card anim">
+          <div class="problem-icon">💊</div>
+          <div>
+            <div class="problem-card-title">Sai Sót Đơn Thuốc</div>
+            <div class="problem-card-en">Prescription Errors</div>
+            <div class="problem-card-desc">Quy trình kê đơn thủ công làm tăng rủi ro sai sót, vi phạm quy định Bộ Y tế.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       SLIDE 3 – MARKET
+  ══════════════════════════════════ -->
+  <section class="slide" id="slide-3">
+    <div class="grid-bg"></div>
+    <div class="glow-orb" style="width:500px;height:500px;top:50%;right:-150px;transform:translateY(-50%);background:radial-gradient(circle,rgba(123,47,190,0.1),transparent 70%);"></div>
+    <div class="slide-content">
+      <div class="slide-header">
+        <div class="eyebrow anim">Market Opportunity</div>
+        <h1 class="slide-title anim">Thị Trường Dược <span class="gradient-text">Việt Nam</span></h1>
+        <p class="slide-subtitle anim">Vietnam Pharmaceutical Market — Untapped Potential</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card anim">
+          <div class="stat-number" data-target="7" data-prefix="~$" data-suffix="B">~$7B</div>
+          <div class="stat-label-vn">Quy mô thị trường 2024</div>
+          <div class="stat-label-en">Market Size 2024</div>
+        </div>
+        <div class="stat-card anim">
+          <div class="stat-number" data-target="70" data-suffix="%+">70%+</div>
+          <div class="stat-label-vn">Chưa có ERP chuyên ngành</div>
+          <div class="stat-label-en">Without Specialized ERP</div>
+        </div>
+        <div class="stat-card anim">
+          <div class="stat-number" data-target="12" data-suffix="%">12%</div>
+          <div class="stat-label-vn">Tăng trưởng hàng năm</div>
+          <div class="stat-label-en">Annual Growth Rate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       SLIDE 4 – SOLUTION OVERVIEW
+  ══════════════════════════════════ -->
+  <section class="slide" id="slide-4">
+    <div class="grid-bg"></div>
+    <div class="glow-orb" style="width:600px;height:300px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,rgba(0,255,209,0.06),transparent 70%);"></div>
+    <div class="slide-content">
+      <div class="slide-header">
+        <div class="eyebrow anim">Our Solution</div>
+        <h1 class="slide-title anim">Một hệ thống. <span class="gradient-text">Toàn bộ chuỗi giá trị.</span></h1>
+        <p class="slide-subtitle anim">One System. Entire Value Chain.</p>
+      </div>
+      <div class="flow-diagram anim">
+        <div class="flow-node">
+          <div class="flow-icon-wrap">🏪</div>
+          <div class="flow-label-vn">Kho</div>
+          <div class="flow-label-en">Warehouse</div>
+        </div>
+        <div class="flow-arrow">
+          <svg viewBox="0 0 50 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ag1" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#00AAFF"/>
+                <stop offset="100%" stop-color="#7B2FBE"/>
+              </linearGradient>
+            </defs>
+            <path d="M2 10 H42 M36 4 L44 10 L36 16" stroke="url(#ag1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="flow-node">
+          <div class="flow-icon-wrap">⚙️</div>
+          <div class="flow-label-vn">Sản xuất</div>
+          <div class="flow-label-en">Manufacturing</div>
+        </div>
+        <div class="flow-arrow">
+          <svg viewBox="0 0 50 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ag2" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#00AAFF"/>
+                <stop offset="100%" stop-color="#7B2FBE"/>
+              </linearGradient>
+            </defs>
+            <path d="M2 10 H42 M36 4 L44 10 L36 16" stroke="url(#ag2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="flow-node">
+          <div class="flow-icon-wrap">🚚</div>
+          <div class="flow-label-vn">Phân phối</div>
+          <div class="flow-label-en">Distribution</div>
+        </div>
+        <div class="flow-arrow">
+          <svg viewBox="0 0 50 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ag3" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#00AAFF"/>
+                <stop offset="100%" stop-color="#7B2FBE"/>
+              </linearGradient>
+            </defs>
+            <path d="M2 10 H42 M36 4 L44 10 L36 16" stroke="url(#ag3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="flow-node">
+          <div class="flow-icon-wrap">🛒</div>
+          <div class="flow-label-vn">Bán hàng</div>
+          <div class="flow-label-en">Sales</div>
+        </div>
+      </div>
+      <div class="pills-row anim">
+        <div class="pill">⚡ Real-time Data</div>
+        <div class="pill">✅ GSP / GDP Compliant</div>
+        <div class="pill">☁️ Cloud-based</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       SLIDE 5 – FEATURE: INVENTORY
+  ══════════════════════════════════ -->
+  <section class="slide feature-slide" id="slide-5">
+    <div class="grid-bg"></div>
+    <div class="glow-orb" style="width:350px;height:350px;top:-80px;right:-80px;background:radial-gradient(circle,rgba(0,255,209,0.08),transparent 70%);"></div>
+    <div class="slide-content">
+      <div class="feature-left anim">
+        <div class="mockup-card">
+          <div class="mockup-title-bar">📦 Inventory Dashboard</div>
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Số lô</th>
+                <th>Sản phẩm</th>
+                <th>Hạn dùng</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>LOT-2401</td>
+                <td>Amoxicillin 500mg</td>
+                <td>12/2026</td>
+                <td><span class="badge badge-ok">● OK</span></td>
+              </tr>
+              <tr>
+                <td>LOT-2208</td>
+                <td>Paracetamol 500mg</td>
+                <td>03/2025</td>
+                <td><span class="badge badge-soon">⚠ Soon</span></td>
+              </tr>
+              <tr>
+                <td>LOT-2105</td>
+                <td>Vitamin C 1000mg</td>
+                <td>08/2024</td>
+                <td><span class="badge badge-exp">✕ Expired</span></td>
+              </tr>
+              <tr>
+                <td>LOT-2402</td>
+                <td>Ibuprofen 400mg</td>
+                <td>06/2027</td>
+                <td><span class="badge badge-ok">● OK</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="margin-top:16px;padding:12px;background:rgba(0,255,209,0.06);border-radius:10px;border:1px solid var(--border-subtle);">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Cảnh báo hệ thống</div>
+            <div style="font-size:13px;color:#FB923C;font-weight:600;">⚠ 3 lô sắp hết hạn trong 30 ngày</div>
+          </div>
+        </div>
+      </div>
+      <div class="feature-right">
+        <div class="feature-header-block anim">
+          <div class="eyebrow">Feature 01</div>
+          <h1 class="slide-title" style="font-size:38px;">Quản lý Kho & Hạn Dùng<br><span class="gradient-text">Thông Minh</span></h1>
+          <p class="slide-subtitle">Smart Inventory & Expiry Management</p>
+        </div>
+        <div class="feature-bullets">
+          <div class="feature-bullet anim">
+            <div class="check-icon">✓</div>
+            <div>
+              <div class="bullet-vn">Theo dõi số lô, ngày SX, hạn dùng real-time</div>
+              <div class="bullet-en">Batch & expiry real-time tracking</div>
+            </div>
+          </div>
+          <div class="feature-bullet anim">
+            <div class="check-icon">✓</div>
+            <div>
+              <div class="bullet-vn">Cảnh báo tự động khi sắp hết hạn</div>
+              <div class="bullet-en">Auto-alerts for near-expiry items</div>
+            </div>
+          </div>
+          <div class="feature-bullet anim">
+            <div class="check-icon">✓</div>
+            <div>
+              <div class="bullet-vn">FIFO / FEFO logic tự động</div>
+              <div class="bullet-en">Automated FIFO / FEFO inventory logic</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       SLIDE 6 – FEATURE: SUPPLY CHAIN
+  ══════════════════════════════════ -->
+  <section class="slide feature-slide" id="slide-6">
+    <div class="grid-bg"></div>
+    <div class="glow-orb" style="width:350px;height:350px;top:-80px;left:-80px;background:radial-gradient(circle,rgba(0,170,255,0.08),transparent 70%);"></div>
+    <div class="slide-content" style="flex-direction:row-reverse;">
+      <div class="feature-left anim">
+        <div class="mockup-card">
+          <div class="mockup-title-bar">🌡 Cold Chain Monitor</div>
+          <div class="gauge-wrap">
+            <div class="gauge-circle">
+              <div class="gauge-temp">4.2°C</div>
+              <div class="gauge-label">2–8°C ● OK</div>
+            </div>
+            <div style="font-size:13px;color:#22C55E;font-weight:600;">● Nhiệt độ trong ngưỡng an toàn</div>
+          </div>
+          <div style="margin-top:16px;">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;">Vị trí kho lạnh đang theo dõi</div>
+            <div class="location-dots">
+              <div class="loc-dot">Hà Nội – WH01</div>
+              <div class="loc-dot">TP.HCM – WH02</div>
+              <div class="loc-dot">Đà Nẵng – WH03</div>
+              <div class="loc-dot">Cần Thơ – WH04</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="feature-right" style="padding-right:40px;">
+        <div class="feature-header-block anim">
+          <div class="eyebrow">Feature 02</div>
+          <h1 class="slide-title" style="font-size:38px;">Chuỗi Cung Ứng<br><span class="gradient-text">& Kho Lạnh</span></h1>
+          <p class="slide-subtitle">Supply Chain & Cold Chain Management</p>
+        </div>
+        <div class="feature-bullets">
+          <div class="feature-bullet anim">
+            <div class="check-icon">✓</div>
+            <div>
+              <div class="bullet-vn">Giám sát nhiệt độ kho lạnh real-time</div>
+              <div class="bullet-en">Cold storage temperature monitoring</div>
+            </div>
+          </div>
+          <div class="feature-bullet anim">
+            <div class="check-icon">✓</div>
+            <div>
+              <div class="bullet-vn">Quản lý nhà cung cấp & đơn mua hàng</div>
+              <div class="bullet-en">Supplier & purchase order management</div>
+            </div>
+          </div>
+          <div class="feature-bullet anim">
+            <div class="check-icon">✓</div>
+            <div>
+              <div class="bullet-vn">Truy xuất nguồn gốc toàn chuỗi</div>
+              <div class="bullet-en">Full supply chain traceability</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       SLIDE 7 – FEATURE: SALES
+  ══════════════════════════════════ -->
+  <section class="slide feature-slide" id="slide-7">
+    <div class="grid-bg"></div>
+    <div class="glow-orb" style="width:350px;height:350px;bottom:-80px;right:-80px;background:radial-gradient(circle,rgba(123,47,190,0.1),transparent 70%);"></div>
+    <div class="slide-content">
+      <div class="feature-left anim">
+        <div class="mockup-card">
+          <div class="mockup-title-bar">💊 E-Prescription System</div>
+          <div class="pos-form">
+            <div class="pos-field">
+              <span class="pos-field-label">Bệnh nhân</span>
+              <span class="pos-field-value">Nguyễn Văn An – BN00421</span>
+            </div>
+            <div class="pos-field">
+              <span class="pos-field-label">Bác sĩ</span>
+              <span class="pos-field-value">BS. Trần Thị Mai – License #VN2021</span>
+            </div>
+            <div class="pos-field">
+              <span class="pos-field-label">Thuốc</span>
+              <span class="pos-field-value">Amoxicillin 500mg × 21 viên</span>
+            </div>
+            <div class="pos-field">
+              <span class="pos-field-label">Liều dùng</span>
+              <span class="pos-field-value">3 lần/ngày – sau ăn</span>
+            </div>
+            <div class="pos-field">
+              <span class="pos-field-label">Số lô</span>
+              <span class="pos-field-value">LOT-2401 | HSD: 12/2026</span>
+            </div>
+          </div>
+          <div style="margin-top:14px;display:flex;align-items:center;gap:12px;">
+            <div class="approved-badge">✔ Approved — Đã xác nhận</div>
+          </div>
+        </div>
+      </div>
+      <div class="feature-right">
+        <div class="feature-header-block anim">
+          <div class="eyebrow">Feature 03</div>
+          <h1 class="slide-title" style="font-size:38px;">Bán Hàng & Quản Lý<br><span class="gradient-text">Đơn Thuốc</span></h1>
+          <p class="slide-subtitle">Sales & Prescription Management</p>
+        </div>
+        <div class="feature-bullets">
+          <div class="feature-bullet anim">
+            <div class="check-icon">✓</div>
+            <div>
+              <div class="bullet-vn">Quản lý đơn kê thuốc điện tử</div>
+              <div class="bullet-en">Digital e-prescription management</div>
+            </div>
+          </div>
+          <div class="feature-bullet anim">
+            <div class="check-icon">✓</div>
+            <div>
+              <div class="bullet-vn">Kiểm soát thuốc kê đơn theo quy định</div>
+              <div class="bullet-en">Regulated controlled-prescription compliance</div>
+            </div>
+          </div>
+          <div class="feature-bullet anim">
+            <div class="check-icon">✓</div>
+            <div>
+              <div class="bullet-vn">Báo cáo doanh số & analytics real-time</div>
+              <div class="bullet-en">Real-time sales analytics & reporting</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       SLIDE 8 – ROI
+  ══════════════════════════════════ -->
+  <section class="slide" id="slide-8">
+    <div class="grid-bg"></div>
+    <div class="glow-orb" style="width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(0,255,209,0.05),transparent 70%);"></div>
+    <div class="slide-content">
+      <div class="slide-header">
+        <div class="eyebrow anim">Measurable Results</div>
+        <h1 class="slide-title anim">Lợi Ích <span class="gradient-text">Thực Tế</span></h1>
+        <p class="slide-subtitle anim">Real Impact, Real Numbers</p>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-card anim">
+          <div class="metric-number" data-countup="40" data-suffix="%">40%</div>
+          <div class="metric-desc-vn">Giảm tồn kho hết hạn</div>
+          <div class="metric-desc-en">Reduction in Expired Stock</div>
+        </div>
+        <div class="metric-card anim">
+          <div class="metric-number" data-countup="30" data-suffix="%">30%</div>
+          <div class="metric-desc-vn">Tiết kiệm chi phí vận hành</div>
+          <div class="metric-desc-en">Operational Cost Savings</div>
+        </div>
+        <div class="metric-card anim">
+          <div class="metric-number" data-countup="50" data-suffix="%">50%</div>
+          <div class="metric-desc-vn">Tăng hiệu suất nhân sự</div>
+          <div class="metric-desc-en">Staff Efficiency Gain</div>
+        </div>
+        <div class="metric-card anim">
+          <div class="metric-number" data-countup="99.9" data-suffix="%" data-decimal="1">99.9%</div>
+          <div class="metric-desc-vn">Độ chính xác đơn thuốc</div>
+          <div class="metric-desc-en">Prescription Accuracy Rate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       SLIDE 9 – WHY US
+  ══════════════════════════════════ -->
+  <section class="slide" id="slide-9">
+    <div class="grid-bg"></div>
+    <div class="glow-orb" style="width:400px;height:400px;top:-100px;right:-100px;background:radial-gradient(circle,rgba(0,170,255,0.07),transparent 70%);"></div>
+    <div class="slide-content">
+      <div class="slide-header">
+        <div class="eyebrow anim">Why Choose Us</div>
+        <h1 class="slide-title anim">Tại Sao Chọn <span class="gradient-text">PharmaOS?</span></h1>
+        <p class="slide-subtitle anim">Why PharmaOS — Built Exclusively for Pharma</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-card anim">
+          <div class="why-icon">🎯</div>
+          <div class="why-title-vn">Chuyên Biệt Ngành Dược</div>
+          <div class="why-title-en">100% Pharma-Specific</div>
+          <div style="font-size:13px;color:var(--text-secondary);text-align:center;">Không phải ERP đa ngành được tùy chỉnh — xây dựng từ đầu cho dược.</div>
+        </div>
+        <div class="why-card anim">
+          <div class="why-icon">✅</div>
+          <div class="why-title-vn">Chuẩn GSP / GDP / GMP</div>
+          <div class="why-title-en">Fully Compliant</div>
+          <div style="font-size:13px;color:var(--text-secondary);text-align:center;">Đáp ứng toàn bộ quy định của Bộ Y tế và tiêu chuẩn quốc tế.</div>
+        </div>
+        <div class="why-card anim">
+          <div class="why-icon">⚡</div>
+          <div class="why-title-vn">Triển Khai 30 Ngày</div>
+          <div class="why-title-en">30-Day Deployment</div>
+          <div style="font-size:13px;color:var(--text-secondary);text-align:center;">Go-live nhanh với quy trình triển khai được chuẩn hóa sẵn.</div>
+        </div>
+        <div class="why-card anim">
+          <div class="why-icon">🛡️</div>
+          <div class="why-title-vn">Hỗ Trợ 24/7</div>
+          <div class="why-title-en">24/7 Vietnamese Support</div>
+          <div style="font-size:13px;color:var(--text-secondary);text-align:center;">Đội ngũ hỗ trợ tiếng Việt sẵn sàng 24/7, 365 ngày.</div>
+        </div>
+      </div>
+      <div class="trust-line anim">Trusted by <strong style="color:var(--text-primary);">50+</strong> pharmaceutical companies across Vietnam</div>
+      <div class="logo-placeholder-row anim">
+        <div class="logo-placeholder"></div>
+        <div class="logo-placeholder"></div>
+        <div class="logo-placeholder"></div>
+        <div class="logo-placeholder"></div>
+        <div class="logo-placeholder"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       SLIDE 10 – CTA
+  ══════════════════════════════════ -->
+  <section class="slide" id="slide-10">
+    <div class="orb-1"></div>
+    <div class="orb-2"></div>
+    <div class="orb-3"></div>
+    <div class="grid-bg"></div>
+    <div class="slide-content">
+      <div class="eyebrow anim" style="font-size:13px;">Get Started Today</div>
+      <h1 class="slide-title anim" style="font-size:56px;text-align:center;">Bắt Đầu Hành Trình<br><span class="gradient-text">Chuyển Đổi Số</span></h1>
+      <div class="cta-subtitle anim">Start Your Digital Transformation Journey</div>
+      <button class="btn-cta-main anim">
+        📅 Đăng Ký Demo Miễn Phí &nbsp;/&nbsp; Book a Free Demo
+      </button>
+      <div class="contact-row anim">
+        <div class="contact-item">📞 +84 (0) 900 123 456</div>
+        <div class="contact-item" style="color:rgba(255,255,255,0.2);">|</div>
+        <div class="contact-item">✉️ hello@pharmaos.vn</div>
+        <div class="contact-item" style="color:rgba(255,255,255,0.2);">|</div>
+        <div class="contact-item">🌐 www.pharmaos.vn</div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- end slides-wrapper -->
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.dot');
+  const counter = document.getElementById('slide-counter');
+  let current = 0;
+  let animating = false;
+
+  function goTo(index) {
+    if (index === current || animating) return;
+    animating = true;
+
+    const prev = slides[current];
+    const next = slides[index];
+
+    prev.classList.remove('active');
+    prev.classList.add('exit-up');
+
+    setTimeout(() => {
+      prev.classList.remove('exit-up');
+    }, 600);
+
+    setTimeout(() => {
+      next.classList.add('active');
+      triggerCountUps(next);
+      animating = false;
+    }, 80);
+
+    dots[current].classList.remove('active');
+    dots[index].classList.add('active');
+    current = index;
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  function next() { if (current < slides.length - 1) goTo(current + 1); }
+  function prev() { if (current > 0) goTo(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  prev();
+  });
+
+  /* ── COUNT-UP ANIMATION ── */
+  function triggerCountUps(slideEl) {
+    const targets = slideEl.querySelectorAll('[data-countup]');
+    targets.forEach(el => {
+      const target   = parseFloat(el.dataset.countup);
+      const suffix   = el.dataset.suffix || '';
+      const decimals = parseInt(el.dataset.decimal) || 0;
+      const duration = 1200;
+      const start    = performance.now();
+
+      function tick(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const val = target * eased;
+        el.textContent = val.toFixed(decimals) + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  /* init first slide count-ups */
+  triggerCountUps(slides[0]);
+
+  /* ── TOUCH / SWIPE ── */
+  let touchStartY = 0;
+  document.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; });
+  document.addEventListener('touchend', e => {
+    const dy = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(dy) > 50) { dy > 0 ? next() : prev(); }
+  });
+</script>
+</body>
+</html>
